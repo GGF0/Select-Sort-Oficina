@@ -1,0 +1,238 @@
+Caio Amorim
+Glauber Guimarães Ferreira
+Curso de Análise e Desenvolvimento de Sistemas
+2 semestre noturno
+
+)Algoritmo de organização de pedidos utilizando o método selectSort()
+
+=======================================================
+package pedidooficina;
+
+public class No {
+    private int elemento;
+    private No proximo;
+    
+  public No (int numero){
+      this.elemento = numero;
+  }
+
+    public int getElemento() {
+        return elemento;
+    }
+
+    public void setElemento(int elemento) {
+        this.elemento = elemento;
+    }
+
+    public No getProximo() {
+        return proximo;
+    }
+
+    public void setProximo(No proximo) {
+        this.proximo = proximo;
+    }
+  
+  
+}
+
+=====================================================
+package pedidooficina;
+
+public class Lista {
+    private No primeiro, ultimo;
+    private int quantidade;
+
+    public Lista() {
+        this.quantidade = 0;
+    }
+
+    public No getPrimeiro() {
+        return primeiro;
+    }
+
+    public void setPrimeiro(No primeiro) {
+        this.primeiro = primeiro;
+    }
+
+    public No getUltimo() {
+        return ultimo;
+    }
+
+    public void setUltimo(No ultimo) {
+        this.ultimo = ultimo;
+    }
+    
+   public int getQuantidade(){
+       return quantidade;
+   }
+   
+   public void adicionar (int novoValor){
+        No valor = new No(novoValor);
+        if (this.primeiro == null){
+            this.primeiro = valor;
+            this.ultimo = valor;            
+        }else{
+            this.ultimo.setProximo(valor);
+            this.ultimo = valor;
+        }
+        this.quantidade++;
+    }
+    public No percorrer(int tamanho){
+        No atual = this.primeiro;
+        for(int i=0; i<tamanho; i++){
+            if (atual.getProximo()!=null){
+                atual = atual.getProximo();
+            }
+        }
+        return atual;
+    }                
+    public void remover (int valorProcurado){
+        No anterior = null;
+        No atual = this.primeiro;
+        for(int i=0; i<this.getQuantidade(); i++){
+            if (atual.getElemento() == valorProcurado){
+                if(this.quantidade==1){
+                    primeiro=null;
+                    ultimo=null;
+                }else if (atual==primeiro){
+                    this.primeiro = (atual.getProximo());
+                    atual.setProximo(null);
+                }else if (atual==ultimo){
+                    this.ultimo=anterior;
+                    anterior.setProximo(null);
+                }else{                    
+                    anterior.setProximo(atual.getProximo());
+                    atual = null;
+                }
+                this.quantidade--;
+                break;
+            }    
+            anterior = atual;
+            atual = atual.getProximo();
+        }
+}
+
+}
+
+====================================================================
+package pedidooficina;
+
+import java.util.Scanner;
+
+public class PedidoOficina {
+    
+public static Lista selectSort(Lista pedido){
+ int posicao_menor,aux;
+for(int i = 0;i < pedido.getQuantidade();i++){
+posicao_menor = i;
+for(int j = i+1;j < pedido.getQuantidade();j++){
+if(pedido.percorrer(j).getElemento() < pedido.percorrer(posicao_menor).getElemento()){
+posicao_menor = j;
+}
+}
+aux = pedido.percorrer(posicao_menor).getElemento();
+pedido.percorrer(posicao_menor).setElemento(pedido.percorrer(i).getElemento());
+pedido.percorrer(i).setElemento(aux);
+}
+return pedido;
+}    
+
+    public static void main(String[] args) {
+    Lista pedido = new Lista();    
+    Scanner tec = new Scanner(System.in);    
+    boolean end = false;
+    String resp;
+    int p;
+    boolean vr = false;
+    
+    do { 
+System.out.println("========Organizador de pedidos da oficina========");
+System.out.println("[1]Adcionar");
+System.out.println("[2]Remover");
+System.out.println("[3]Organizar");
+System.out.println("[4]Visualizar");
+System.out.println("[5]Fechar");
+int option = tec.nextInt();
+System.out.println("==================================================");
+
+switch(option){
+    case 1:
+        do{
+System.out.println("Digite o número do pedido:");   
+p = tec.nextInt();
+for(int i=0; i < pedido.getQuantidade(); i++){
+    if(p == pedido.percorrer(i).getElemento()){
+            vr = true;
+            break;
+        }
+                }
+   if(vr == true){
+            System.out.println("Pedido existente"); 
+        }else{
+pedido.adicionar(p);
+vr = false;
+System.out.println("Adcionado!");
+                }
+
+System.out.println("Quer continuar?");
+resp = tec.next();
+        }while(resp.equals("S")||resp.equals("s"));
+        break;
+        
+    case 2:
+        do{
+if(pedido.getQuantidade() > 0){            
+System.out.println("Digite o número do pedido:");  
+p = tec.nextInt();
+for(int i=0; i < pedido.getQuantidade(); i++){
+    if(p != pedido.percorrer(i).getElemento()){
+            vr = true; 
+            break;
+        }
+                } 
+if(vr == true){
+            System.out.println("Impossível remover"); 
+        }else{
+pedido.remover(p);
+vr = false;
+System.out.println("Removido!");
+                }
+
+}else{
+   System.out.println("Lista vazia");  
+}
+
+System.out.println("Quer continuar?");
+resp = tec.next();
+        }while(resp.equals("S")||resp.equals("s"));
+        break; 
+        
+    case 3:
+selectSort(pedido);
+
+System.out.println("Lista de pedidos organizada!");        
+        break;
+        
+    case 4:
+    if(pedido.getQuantidade()>0){
+        System.out.println("Quantidade de pedidos: " + pedido.getQuantidade());
+        System.out.println("Todos os pedidos: ");
+        for(int i=0; i < pedido.getQuantidade(); i++){
+            System.out.println(pedido.percorrer(i).getElemento()); 
+        }
+    }
+        break;
+        
+    case 5:
+System.out.println("Encerrando...");
+end = true;
+        break;
+        
+    default:
+System.out.println("Erro");
+        break;
+}
+        } while(end != true);
+    }
+    
+}
